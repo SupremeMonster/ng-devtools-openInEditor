@@ -1,0 +1,19 @@
+{
+  "name": "ng-devtools-open-editor-middleware",
+  "version": "1.0.1",
+  "description": "Angular devtools模拟Vue devtools在编辑器中打开源文件功能的中间件",
+  "main": "index.js",
+  "keywords": [
+    "angular",
+    "angular-devtools",
+    "open-editor"
+  ],
+  "author": "Ding Yi",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SupremeMonster/ng-devtools-openInEditor"
+  },
+  "dependencies": {
+    "launch-editor": "^2.4.0"
+  }
+}
