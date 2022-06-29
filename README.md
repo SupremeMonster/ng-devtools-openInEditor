@@ -1,11 +1,8 @@
-### What's this
-这是一个nodejs中间件，借鉴vue-devtools的open source code in editor能力，尝试在angular devtools实现同样的功能。该中间件的主要作用就是在src目录下根据angular的组件名称全文检索该组件路径。
-
-
-#### Step1 
+# 一、根据组件name匹配
+#### Step1 注意一下版本，1.0.5之前 只支持根据name匹配，1.0.5支持路径和name匹配，openInEditor方法第二个参数为“path”或“name”
 
 ```
-   npm install ng-devtools-open-editor-middleware -d 
+   npm install ng-devtools-open-editor-middleware@1.0.5 -d 
 ```
 
 
@@ -27,7 +24,7 @@ module.exports = {
             middlewares.unshift({
                 name: "open-editor",
                 path: "/__open-in-editor",
-                middleware: openInEditor("code"),
+                middleware: openInEditor("code","name"),
             });
             return middlewares;
         },
@@ -50,8 +47,10 @@ module.exports = {
            "customWebpackConfig": {
               "path": "./extra-webpack.config.js",
               "mergeStrategies": {
-                "module.rules": "append",
                 "devServer": "prepend"  //添加这一行
+                "module":{
+                    rules": "append",
+                }
               },
               "replaceDuplicatePlugins": true
             }, 
@@ -103,4 +102,151 @@ data---> [ ...]
 ```
 
 
-注意： 由于nz-modal是脱离body的，因此暂不支持，正在寻找解决办法....
+
+# 二、根据组件路径匹配
+
+#### Step1 
+
+```
+   npm install ng-devtools-open-editor-middleware@1.0.5 -d 
+```
+
+#### Step2
+
+extra-webpack.config.js
+
+
+```
+const openInEditor = require("ng-devtools-open-editor-middleware");
+....
+....
+module.exports = {
+    resolveLoader: {
+        alias: {
+            "add-location": path.resolve("./add-location.js"),
+        },
+    },
+    devServer: {
+    // Webpack5以下
+        before(app) {
+            app.use("/__open-in-editor", openInEditor("code"));
+        },  
+    // Webpack5 
+      setupMiddlewares: (middlewares, devServer) => {
+            middlewares.unshift({
+                name: "open-editor",
+                path: "/__open-in-editor",
+                middleware: openInEditor("code","name"),
+            });
+            return middlewares;
+        },
+    },
+    module: {
+        rules: [
+            {
+                test: /\.ts$/,
+                use: "add-location",
+                exclude: [/\.(spec|e2e|service|module)\.ts$/],
+            },
+        ],
+       ...
+    },
+};
+
+```
+
+#### Step3 extra-webpack.config.js同级新建add-location.js
+add-location.js
+```
+const path = require("path");
+module.exports = function (source) {
+    if (source.indexOf("constructor(") >= 0) {
+        const { resourcePath, rootContext } = this;
+
+        /**add-
+         * path.relative 根据当前src路径得到源码的相对路径
+         */
+
+        const rawShortFilePath = path
+            .relative(rootContext || process.cwd(), resourcePath)
+            .replace(/^(\.\.[\/\\])+/, "");
+        // console.log("rawShortFilePath", rawShortFilePath);
+        source = source.replace(
+            "constructor",
+            "sourcePath ='" +
+                rawShortFilePath.replace(/\\/g, "/") +
+                "';\n\nconstructor"
+        );
+    }
+
+    return source;
+};
+
+```
+
+#### Step4 angular.json
+
+```
+    "customWebpackConfig": {
+      "path": "./extra-webpack.config.js",
+      "mergeRules": {
+        "resolveLoader": "prepend",
+        "devServer": "prepend",
+        "module": {
+          "rules": "prepend"   // rules改成prepend
+        } 
+      },
+      "replaceDuplicatePlugins": false  //replaceDuplicatePlugins改为false
+    },
+```
+
+#### Step5 app.component.ts
+```
+    openSourceInEditor($event) {
+     if (environment.production) return;
+        $event.preventDefault();
+        const path = $event.path;
+        let sourcePath = '';
+        for (let i = 0; i < path.length; i++) {
+            const { localName } = path[i];
+            if (localName && localName.indexOf('app-') >= 0) {
+                if (path[i].__ngContext__?.component) {
+                    sourcePath = path[i].__ngContext__.component.sourcePath;
+                } else {
+                    const temp = path[i].__ngContext__.find(
+                        (e) =>
+                            e &&
+                            e.sourcePath &&
+                            e.sourcePath.indexOf(
+                                `${localName.substring(
+                                    localName.indexOf('-') + 1,
+                                    localName.length - 1
+                                )}`
+                            )
+                    );
+                    sourcePath = temp.sourcePath;
+                }
+                break;
+            }
+        }
+        fetch(`__open-in-editor?file=${sourcePath}`)
+            .then((res) => {})
+            .catch((err) => {});
+    }
+
+      ...
+      ngOnInit(): void {
+           ...
+            const listener = new WeakMap();
+            listener.set(document.body, this.openSourceInEditor);
+            document.body.addEventListener(
+                'contextmenu',
+                listener.get(document.body),
+                false
+            );
+        }
+```
+
+# 三、总结
+
+同样操作，前者基本能满足95%的场景，配置也稍微简单点；后者保证存在组件名称相同的情况下能够正确打开，且基本秒打开，右键如何获取组件的属性可以调试看下。
