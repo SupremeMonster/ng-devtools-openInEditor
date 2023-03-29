@@ -1,5 +1,6 @@
 # Lastest 
 
+3.29 更新 Chrome109版本删除了鼠标右击的event.path属性，详情见：https://juejin.cn/post/7177645078146449466，已更新app.component.ts代码
 3.28 更新 自动化执行所有配置脚本：链接 https://github.com/SupremeMonster/OpenInEditorShell
 
 # 一、根据组件name匹配
@@ -69,7 +70,7 @@ module.exports = {
     openSourceInEditor($event) {
         if (environment.production) return;
         $event.preventDefault();
-        const path = $event.path;
+        const path = $event.composedPath();
         let componentName = '';
         for (let i = 0; i < path.length; i++) {
             const { localName } = path[i];
@@ -209,7 +210,7 @@ module.exports = function (source) {
     openSourceInEditor($event) {
      if (environment.production) return;
         $event.preventDefault();
-        const path = $event.path;
+        const path = $event.composedPath();
         let sourcePath = '';
         for (let i = 0; i < path.length; i++) {
             const { localName } = path[i];
