@@ -1,7 +1,7 @@
 # Lastest 
 
-3.29 更新 Chrome109版本删除了鼠标右击的event.path属性，详情见：https://juejin.cn/post/7177645078146449466，已更新app.component.ts代码
-3.28 更新 自动化执行所有配置脚本：链接 https://github.com/SupremeMonster/OpenInEditorShell
+- 3.29 更新 Chrome新版本删除了鼠标右击的event.path属性，已更新app.component.ts代码，详情见：https://juejin.cn/post/7177645078146449466
+- 3.28 更新 自动化执行所有配置脚本：链接 https://github.com/SupremeMonster/OpenInEditorShell
 
 # 一、根据组件name匹配
 #### Step1 注意一下版本，1.0.5之前 只支持根据name匹配，1.0.5支持路径和name匹配，openInEditor方法第二个参数为“path”或“name”
