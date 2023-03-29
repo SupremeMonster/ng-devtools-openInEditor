@@ -51,10 +51,10 @@ module.exports = {
        "options":{
            "customWebpackConfig": {
               "path": "./extra-webpack.config.js",
-              "mergeStrategies": {
+              "mergeStrategies": {   // angular11或以上改成mergeRules
                 "devServer": "prepend"  //添加这一行
                 "module":{
-                    rules": "append",
+                    rules": "append",   //webpack5改成“prepend”
                 }
               },
               "replaceDuplicatePlugins": true
@@ -194,11 +194,11 @@ module.exports = function (source) {
 ```
     "customWebpackConfig": {
       "path": "./extra-webpack.config.js",
-      "mergeRules": {
+       "mergeStrategies": {   // angular11或以上改成mergeRules
         "resolveLoader": "prepend",
         "devServer": "prepend",
         "module": {
-          "rules": "prepend"   // rules改成prepend
+          "rules": "append"   //webpack5改成“prepend”
         } 
       },
       "replaceDuplicatePlugins": false  //replaceDuplicatePlugins改为false
