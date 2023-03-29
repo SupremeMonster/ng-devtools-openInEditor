@@ -54,7 +54,7 @@ module.exports = {
               "mergeStrategies": {   // angular11或以上改成mergeRules
                 "devServer": "prepend"  //添加这一行
                 "module":{
-                    rules": "append",   //webpack5改成“prepend”
+                    rules": "prepend", 
                 }
               },
               "replaceDuplicatePlugins": true
@@ -198,10 +198,10 @@ module.exports = function (source) {
         "resolveLoader": "prepend",
         "devServer": "prepend",
         "module": {
-          "rules": "append"   //webpack5改成“prepend”
+          "rules": "prepend" 
         } 
       },
-      "replaceDuplicatePlugins": false  //replaceDuplicatePlugins改为false
+      "replaceDuplicatePlugins": true 
     },
 ```
 
