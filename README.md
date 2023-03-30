@@ -134,14 +134,14 @@ module.exports = {
     devServer: {
     // Webpack5以下
         before(app) {
-            app.use("/__open-in-editor", openInEditor("code"));
+            app.use("/__open-in-editor", openInEditor("code","path"));
         },  
     // Webpack5 
       setupMiddlewares: (middlewares, devServer) => {
             middlewares.unshift({
                 name: "open-editor",
                 path: "/__open-in-editor",
-                middleware: openInEditor("code","name"),
+                middleware: openInEditor("code","path"),
             });
             return middlewares;
         },
@@ -172,16 +172,9 @@ module.exports = function (source) {
          * path.relative 根据当前src路径得到源码的相对路径
          */
 
-        const rawShortFilePath = path
-            .relative(rootContext || process.cwd(), resourcePath)
-            .replace(/^(\.\.[\/\\])+/, "");
-        // console.log("rawShortFilePath", rawShortFilePath);
-        source = source.replace(
-            "constructor",
-            "sourcePath ='" +
-                rawShortFilePath.replace(/\\/g, "/") +
-                "';\n\nconstructor"
-        );
+        const rawShortFilePath = path.relative(rootContext || process.cwd(), resourcePath).replace(/^(\.\.[\/\\])+/, '');
+        const sourcePath = rawShortFilePath.replace(/\\/g, '/');
+        source = source.replace(/constructor(\([\s\S]*?\))\s*\{([\s\S]*)$/, `constructor$1 { \n    this.sourcePath='${sourcePath}';\n$2`);
     }
 
     return source;
