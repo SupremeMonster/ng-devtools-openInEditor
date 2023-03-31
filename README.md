@@ -1,5 +1,5 @@
 # Lastest 
-
+- 3.31 大量测试后做了兼容性配置处理，修改了add-location.js
 - 3.29 更新 Chrome新版本删除了鼠标右击的event.path属性，已更新app.component.ts代码，详情见：https://juejin.cn/post/7177645078146449466
 - 3.28 更新 自动化执行所有配置脚本：链接 https://github.com/SupremeMonster/OpenInEditorShell
 
@@ -163,9 +163,9 @@ module.exports = {
 #### Step3 extra-webpack.config.js同级新建add-location.js
 add-location.js
 ```
-const path = require("path");
+const path = require('path');
 module.exports = function (source) {
-    if (source.indexOf("constructor(") >= 0) {
+    if (source.indexOf('constructor(') >= 0) {
         const { resourcePath, rootContext } = this;
 
         /**add-
@@ -174,11 +174,18 @@ module.exports = function (source) {
 
         const rawShortFilePath = path.relative(rootContext || process.cwd(), resourcePath).replace(/^(\.\.[\/\\])+/, '');
         const sourcePath = rawShortFilePath.replace(/\\/g, '/');
-        source = source.replace(/constructor(\([\s\S]*?\))\s*\{([\s\S]*)$/, `constructor$1 { \n    this.sourcePath='${sourcePath}';\n$2`);
+        if (source.indexOf('super()') >= 0) {
+            source = source.replace(/super\(\);/, "super();\nthis.sourcePath='" + sourcePath + "';");
+        } else {
+            source = source.replace(/constructor\(([\s\S]*?)\)\s*{/gm, "constructor($1){\nthis.sourcePath='" + sourcePath + "';");
+        }
+
+        console.log(source);
     }
 
     return source;
 };
+
 
 ```
 
