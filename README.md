@@ -1,15 +1,15 @@
 # Lastest 
-- 4.3 测试angular6版本后发现，custom-webpack在8版本之前都没有dev-server，需要额外下载@angular-builders/dev-server，已兼容；ng-devtools-open-editor-middleware升级到1.0.6，兼容按文件名遍历查找时支持"app-xx"双引号查找，以前只支持单引号
-- 3.31 大量测试后做了兼容性配置处理，修改了add-location.js
-- 3.29 更新 Chrome新版本删除了鼠标右击的event.path属性，已更新app.component.ts代码，详情见：https://juejin.cn/post/7177645078146449466
-- 3.28 更新 自动化执行所有配置脚本：链接 https://github.com/SupremeMonster/OpenInEditorShell
 
-#  注意
-angular11版本前统一用名称匹配；
-angular11版本后统一用路径匹配；
+## 2023.4.3 
+- 升级到1.0.6，兼容按文件名遍历查找时支持"app-xx"双引号查找，以前只支持单引号
 
+ ## 2023.3.28
+- 更新自动化执行所有配置脚本：链接 https://github.com/SupremeMonster/OpenInEditorShell
 
-# 一、根据组件name匹配
+#  Feature
+
+## 一、根据组件name匹配
+
 #### Step1 注意一下版本，1.0.5之前 只支持根据name匹配，1.0.5支持路径和name匹配，openInEditor方法第二个参数为“path”或“name”
 
 ```
