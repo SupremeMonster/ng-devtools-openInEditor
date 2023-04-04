@@ -25,7 +25,7 @@ module.exports = (specifiedEditor, srcRoot, onErrorCallback) => {
             //路由
             const filePath = path.resolve("./src");
             //关键字
-            lookingForString = new RegExp(`'${file}'`, "g");
+            lookingForString = new RegExp(`(['"])${file}\\1`, "g")
             bigArr.length = 0;
             recursiveReadFile(filePath);
             const newArr = [...new Set(bigArr)];
