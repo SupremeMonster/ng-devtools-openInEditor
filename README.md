@@ -8,6 +8,9 @@
 
 #  Feature
 
+从vue的devtools中在编辑器中打开组件源码的功能得来灵感，angular实现此功能，且操作更简单，只需要右击想要查看的组件，即可自动在编辑器（vscode）中打开
+手动配置步骤如下：
+
 ## 一、根据组件name匹配
 
 #### Step1 注意一下版本，1.0.5之前 只支持根据name匹配，1.0.5支持路径和name匹配，openInEditor方法第二个参数为“path”或“name”
