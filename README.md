@@ -31,7 +31,7 @@ module.exports = {
     devServer: {
     // Webpack5以下
         before(app) {
-            app.use("/__open-in-editor", openInEditor("code"));
+            app.use("/__open-in-editor", openInEditor("code","name"));
         },  
     // Webpack5 
       setupMiddlewares: (middlewares, devServer) => {
